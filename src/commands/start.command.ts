@@ -12,8 +12,8 @@ export class StartCommand extends Command {
         this.bot.start((ctx) => {
             console.log(ctx.session)
             ctx.reply('Вам понравился курс?', Markup.inlineKeyboard([
-                Markup.button.callback('\xF0\x9F\x91\x8D', 'course_like'),
-                Markup.button.callback('\xF0\x9F\x91\x8E', 'course_dislike')
+                Markup.button.callback('👍', 'course_like'),
+                Markup.button.callback('👎', 'course_dislike')
             ]))
         });
 
