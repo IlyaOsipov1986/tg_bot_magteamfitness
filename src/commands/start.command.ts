@@ -1,4 +1,4 @@
-import { Markup, Telegraf } from "telegraf";
+import { Markup, Telegraf } from "telegraf"; 
 import { Command } from "./command.class";
 import { IBotContext } from "../context/context.interface";
 import { getMainMenuUser, getMainMenuAdmin } from "../utils/keyboards";
@@ -12,12 +12,15 @@ export class StartCommand extends Command {
     handle(): void {
         this.bot.start((ctx) => {
             console.log(ctx.session)
-            ctx.reply('Добро пожаловать в бот! Войти как:', Markup.inlineKeyboard([
+            ctx.reply('Добро пожаловать в бот! Войти как:', Markup.removeKeyboard())
+            ctx.reply('Добро пожаловать в бот! Войти как:',
+            Markup.inlineKeyboard([
                 Markup.button.callback('Пользователь', 'user'),
                 Markup.button.callback('Администратор', 'admin')
             ]))
         });
 
+    
         this.bot.action("user", (ctx) => {
             ctx.session.authType = 'user';
             ctx.reply("Вы вошли как пользователь", getMainMenuUser()) 
@@ -26,6 +29,30 @@ export class StartCommand extends Command {
         this.bot.action("admin", (ctx) => {
             ctx.session.authType = 'admin';
             ctx.reply("Вы вошли как администратор", getMainMenuAdmin()) 
+        })
+    }
+
+    handleAdmin(): void {
+        this.bot.hears('Список атлетов', (ctx) => {
+           ctx.reply('Тут будут список атлетов') 
+        })
+        
+        this.bot.hears('Добавить атлета', (ctx) => {
+            ctx.reply('Тут будет форма добавления атлета')
+        })
+
+        this.bot.hears('Загрузить документ', (ctx) => {
+            ctx.reply('Загрузка документа')
+        })
+    }
+
+    handleUser(): void {
+        this.bot.hears('Скачать программу тренировок', (ctx) => {
+           ctx.reply('Скачивание программы тренировок') 
+        })
+        
+        this.bot.hears('Скачать документ', (ctx) => {
+            ctx.reply('Скачивание документа')
         })
     }
 }

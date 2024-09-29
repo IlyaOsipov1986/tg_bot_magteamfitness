@@ -20,6 +20,8 @@ class Bot {
         this.commands = [new StartCommand(this.bot)]
         for(const command of this.commands) {
             command.handle();
+            command.handleUser();
+            command.handleAdmin();
         }
         this.bot.launch();
     }
