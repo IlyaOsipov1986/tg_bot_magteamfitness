@@ -1,6 +1,7 @@
 import { Markup, Telegraf } from "telegraf";
 import { Command } from "./command.class";
 import { IBotContext } from "../context/context.interface";
+import { getMainMenuUser, getMainMenuAdmin } from "../utils/keyboards";
 
 export class StartCommand extends Command {
 
@@ -11,20 +12,20 @@ export class StartCommand extends Command {
     handle(): void {
         this.bot.start((ctx) => {
             console.log(ctx.session)
-            ctx.reply('Вам понравился курс?', Markup.inlineKeyboard([
-                Markup.button.callback('👍', 'course_like'),
-                Markup.button.callback('👎', 'course_dislike')
+            ctx.reply('Добро пожаловать в бот! Войти как:', Markup.inlineKeyboard([
+                Markup.button.callback('Пользователь', 'user'),
+                Markup.button.callback('Администратор', 'admin')
             ]))
         });
 
-        this.bot.action("course_like", (ctx) => {
-            ctx.session.courseLike = true;
-            ctx.editMessageText("Круто");
+        this.bot.action("user", (ctx) => {
+            ctx.session.authType = 'user';
+            ctx.reply("Вы вошли как пользователь", getMainMenuUser()) 
         })
 
-        this.bot.action("course_dislike", (ctx) => {
-            ctx.session.courseLike = false;
-            ctx.editMessageText("Плохо");
+        this.bot.action("admin", (ctx) => {
+            ctx.session.authType = 'admin';
+            ctx.reply("Вы вошли как администратор", getMainMenuAdmin()) 
         })
     }
 }
