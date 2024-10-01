@@ -1,7 +1,7 @@
 import { Markup, Telegraf } from "telegraf"; 
 import { Command } from "./command.class";
 import { IBotContext } from "../context/context.interface";
-import { getMainMenuUser, getMainMenuAdmin } from "../utils/keyboards";
+import { getMainMenuAdmin, getMainMenuUser } from "../utils/keyboards";
 
 export class StartCommand extends Command {
 
@@ -12,23 +12,22 @@ export class StartCommand extends Command {
     handle(): void {
         this.bot.start((ctx) => {
             console.log(ctx.session)
-            ctx.reply('Добро пожаловать в бот! Войти как:', Markup.removeKeyboard())
-            ctx.reply('Добро пожаловать в бот! Войти как:',
+            ctx.reply('Добро пожаловать в бот! Подписавшись на канал, вы сможете получать свежие анонсы. После авторизации будет доступен гайд.',
             Markup.inlineKeyboard([
-                Markup.button.callback('Пользователь', 'user'),
-                Markup.button.callback('Администратор', 'admin')
+                Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
+                Markup.button.callback('Авторизоваться', 'user')
             ]))
+              // ctx.reply('Добро пожаловать в бот! Войти как:', Markup.removeKeyboard())// Удаление клавиатуры
         });
 
-    
         this.bot.action("user", (ctx) => {
-            ctx.session.authType = 'user';
-            ctx.reply("Вы вошли как пользователь", getMainMenuUser()) 
+            ctx.session.authType = "user";
+            ctx.reply("Вы вошли как пользователь", getMainMenuUser()); 
         })
 
-        this.bot.action("admin", (ctx) => {
-            ctx.session.authType = 'admin';
-            ctx.reply("Вы вошли как администратор", getMainMenuAdmin()) 
+        this.bot.command('admin', (ctx) => {
+            ctx.session.authType = "admin";
+            ctx.reply('Вы вошли как администратор', getMainMenuAdmin());
         })
     }
 
