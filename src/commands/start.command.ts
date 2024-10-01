@@ -20,14 +20,23 @@ export class StartCommand extends Command {
               // ctx.reply('Добро пожаловать в бот! Войти как:', Markup.removeKeyboard())// Удаление клавиатуры
         });
 
-        this.bot.action("user", (ctx) => {
+        this.bot.action('user', (ctx) => {
             ctx.session.authType = "user";
             ctx.reply("Вы вошли как пользователь", getMainMenuUser()); 
         })
 
         this.bot.command('admin', (ctx) => {
-            ctx.session.authType = "admin";
-            ctx.reply('Вы вошли как администратор', getMainMenuAdmin());
+            ctx.reply('Введите пароль администратора');
+        })
+
+        this.bot.on('message', (ctx) => {
+            if (ctx.text === '89139214779') {
+                console.log('ok')
+                ctx.session.authType = "admin";
+                ctx.reply("Вы вошли как администратор", getMainMenuAdmin()); 
+            } else {
+                ctx.reply("Неверный пароль");
+            }
         })
     }
 
