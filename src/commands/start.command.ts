@@ -12,6 +12,7 @@ export class StartCommand extends Command {
     handle(): void {
         this.bot.start((ctx) => {
             console.log(ctx.session)
+            ctx.session.authType = "";
             ctx.reply('Добро пожаловать в бот! Подписавшись на канал, вы сможете получать свежие анонсы. После авторизации будет доступен гайд.',
             Markup.inlineKeyboard([
                 Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
@@ -22,34 +23,41 @@ export class StartCommand extends Command {
 
         this.bot.action('user', (ctx) => {
             ctx.session.authType = "user";
-            ctx.reply("Вы вошли как пользователь", getMainMenuUser()); 
+            ctx.reply("Вы вошли как пользователь", getMainMenuUser(), ); 
         })
 
         this.bot.command('admin', (ctx) => {
-            ctx.reply('Введите пароль администратора');
+            ctx.session.authType = "admin";
+            ctx.reply('Введите пароль администратора', Markup.removeKeyboard());
         })
 
         this.bot.on('message', (ctx) => {
-            if (ctx.text === '89139214779') {
-                console.log('ok')
-                ctx.session.authType = "admin";
-                ctx.reply("Вы вошли как администратор", getMainMenuAdmin()); 
-            } else {
-                ctx.reply("Неверный пароль");
+            const typeAuth = ctx.session.authType;
+            if (typeAuth === 'admin') {
+                if (ctx.text === '89139214779') {
+                    console.log('ok')
+                    ctx.reply("Вы вошли как администратор", getMainMenuAdmin()); 
+                } else {
+                    ctx.reply("Неверный пароль");
+                }
+            } else if(typeAuth === 'user') {
+                if(ctx.text === 'Скачать гайд') {
+                    ctx.reply('Скачивание документа')
+                }
             }
         })
     }
 
     handleAdmin(): void {
-        this.bot.hears('Список атлетов', (ctx) => {
+        this.bot.action('listUsers', (ctx) => {
            ctx.reply('Тут будут список атлетов') 
         })
         
-        this.bot.hears('Добавить атлета', (ctx) => {
+        this.bot.action('addUser', (ctx) => {
             ctx.reply('Тут будет форма добавления атлета')
         })
 
-        this.bot.hears('Загрузить документ', (ctx) => {
+        this.bot.action('guid', (ctx) => {
             ctx.reply('Загрузка документа')
         })
     }
