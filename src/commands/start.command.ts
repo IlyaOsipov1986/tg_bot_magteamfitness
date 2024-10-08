@@ -23,7 +23,7 @@ export class StartCommand extends Command {
 
         this.bot.action('user', (ctx) => {
             ctx.session.authType = "user";
-            ctx.reply("Вы вошли как пользователь", getMainMenuUser(), ); 
+            ctx.reply("Вы вошли как user", getMainMenuUser(),); 
         })
 
         this.bot.command('admin', (ctx) => {
@@ -41,7 +41,7 @@ export class StartCommand extends Command {
                     ctx.reply("Неверный пароль");
                 }
             } else if(typeAuth === 'user') {
-                if(ctx.text === 'Скачать гайд') {
+                if (ctx.text === 'Скачать гайд') {
                     ctx.reply('Скачивание документа')
                 }
             }
