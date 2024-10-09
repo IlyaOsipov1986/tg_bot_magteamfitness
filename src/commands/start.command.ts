@@ -3,6 +3,8 @@ import { Command } from "./command.class";
 import { IBotContext } from "../context/context.interface";
 import { getMainMenuAdmin, getMainMenuUser } from "../utils/keyboards";
 import { resetActiveAdmin } from "../utils/resetSession";
+import { response } from "express";
+import { text } from "stream/consumers";
 
 export class StartCommand extends Command {
 
@@ -61,19 +63,26 @@ export class StartCommand extends Command {
             ctx.reply('Прикрепите файл')
         })
 
-        this.bot.on('document', (ctx) => {
-            console.log(ctx?.update?.message?.document);
-            ctx.replyWithHTML('Получить документ' + `<a href=${ctx?.update?.message?.document?.file_id}>Ссылка</a>`)
+        this.bot.on('document', async (ctx) => {
+            const typeAuth = ctx.session.authType;
+            const adminActive = ctx.session.adminActive;
+            const fileId = ctx?.update?.message?.document.file_id;
+            if (typeAuth && adminActive) {
+                ctx.telegram.getFileLink(fileId).then((link) => {
+                    console.log(link);
+                })
+            }
         })
     }
 
     handleUser(): void {
         this.bot.action('Скачать программу тренировок', (ctx) => {
-           ctx.reply('Скачивание программы тренировок') 
+           ctx.reply('Скачивание программы тренировок'); 
         })
         
         this.bot.action('uploadGuide', (ctx) => {
-            ctx.reply('Скачивание документа')
+            ctx.reply('Документ удачно загружен');
+            ctx.replyWithDocument('BQACAgIAAxkBAAID8WcGjTwnBoGd_hNGAxaUv33GuHAMAAI0XAACBRU4SDRE4_XAkNpqNgQ');
         })
     }
 }
