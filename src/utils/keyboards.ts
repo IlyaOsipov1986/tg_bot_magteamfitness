@@ -4,12 +4,12 @@ export function getMainMenuAdmin() {
     return Markup.inlineKeyboard([
         Markup.button.callback('Список атлетов', 'listUsers'),
         Markup.button.callback('Добавить атлета', 'addUser'),
-        Markup.button.callback('Загрузить гайд', 'guid')
+        Markup.button.callback('Загрузить гайд', 'downloadGuide')
     ])
 }
 
 export function getMainMenuUser() {
-    return Markup.keyboard([
-        ['Скачать гайд']
-    ]).resize();
+    return Markup.inlineKeyboard([
+        Markup.button.callback('Скачать гайд', 'uploadGuide'),
+    ])
 }

@@ -2,6 +2,7 @@ import { Markup, Telegraf } from "telegraf";
 import { Command } from "./command.class";
 import { IBotContext } from "../context/context.interface";
 import { getMainMenuAdmin, getMainMenuUser } from "../utils/keyboards";
+import { resetActiveAdmin } from "../utils/resetSession";
 
 export class StartCommand extends Command {
 
@@ -12,7 +13,7 @@ export class StartCommand extends Command {
     handle(): void {
         this.bot.start((ctx) => {
             console.log(ctx.session)
-            ctx.session.authType = "";
+            resetActiveAdmin(ctx);
             ctx.reply('Добро пожаловать в бот! Подписавшись на канал, вы сможете получать свежие анонсы. После авторизации будет доступен гайд.',
             Markup.inlineKeyboard([
                 Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
@@ -22,27 +23,26 @@ export class StartCommand extends Command {
         });
 
         this.bot.action('user', (ctx) => {
+            resetActiveAdmin(ctx);
             ctx.session.authType = "user";
-            ctx.reply("Вы вошли как user", getMainMenuUser(),); 
+            ctx.reply("Вы вошли как user", getMainMenuUser()); 
         })
 
         this.bot.command('admin', (ctx) => {
-            ctx.session.authType = "admin";
+            resetActiveAdmin(ctx);
+            ctx.session.authType = 'admin';    
             ctx.reply('Введите пароль администратора', Markup.removeKeyboard());
         })
 
-        this.bot.on('message', (ctx) => {
+        this.bot.on('text', (ctx) => {
             const typeAuth = ctx.session.authType;
-            if (typeAuth === 'admin') {
+            const adminActive = ctx.session.adminActive;
+            if (typeAuth === 'admin' && !adminActive) {
                 if (ctx.text === '89139214779') {
-                    console.log('ok')
                     ctx.reply("Вы вошли как администратор", getMainMenuAdmin()); 
+                    ctx.session.adminActive = true;
                 } else {
                     ctx.reply("Неверный пароль");
-                }
-            } else if(typeAuth === 'user') {
-                if (ctx.text === 'Скачать гайд') {
-                    ctx.reply('Скачивание документа')
                 }
             }
         })
@@ -57,17 +57,22 @@ export class StartCommand extends Command {
             ctx.reply('Тут будет форма добавления атлета')
         })
 
-        this.bot.action('guid', (ctx) => {
-            ctx.reply('Загрузка документа')
+        this.bot.action('downloadGuide', (ctx) => {
+            ctx.reply('Прикрепите файл')
+        })
+
+        this.bot.on('document', (ctx) => {
+            console.log(ctx?.update?.message?.document);
+            ctx.replyWithHTML('Получить документ' + `<a href=${ctx?.update?.message?.document?.file_id}>Ссылка</a>`)
         })
     }
 
     handleUser(): void {
-        this.bot.hears('Скачать программу тренировок', (ctx) => {
+        this.bot.action('Скачать программу тренировок', (ctx) => {
            ctx.reply('Скачивание программы тренировок') 
         })
         
-        this.bot.hears('Скачать документ', (ctx) => {
+        this.bot.action('uploadGuide', (ctx) => {
             ctx.reply('Скачивание документа')
         })
     }
