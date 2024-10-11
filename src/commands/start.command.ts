@@ -1,10 +1,10 @@
-import { Markup, Telegraf } from "telegraf"; 
+import { Markup, Telegraf } from "telegraf";
+import { message } from "telegraf/filters"; 
 import { Command } from "./command.class";
 import { IBotContext } from "../context/context.interface";
 import { getMainMenuAdmin, getMainMenuUser } from "../utils/keyboards";
 import { resetActiveAdmin } from "../utils/resetSession";
-import { response } from "express";
-import { text } from "stream/consumers";
+import { getGuides } from "../database/database";
 
 export class StartCommand extends Command {
 
@@ -16,6 +16,8 @@ export class StartCommand extends Command {
         this.bot.start((ctx) => {
             console.log(ctx.session)
             resetActiveAdmin(ctx);
+            getGuides()
+                .then((res: any) => console.log(res))
             ctx.reply('Добро пожаловать в бот! Подписавшись на канал, вы сможете получать свежие анонсы. После авторизации будет доступен гайд.',
             Markup.inlineKeyboard([
                 Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
@@ -36,7 +38,7 @@ export class StartCommand extends Command {
             ctx.reply('Введите пароль администратора', Markup.removeKeyboard());
         })
 
-        this.bot.on('text', (ctx) => {
+        this.bot.on(message("text"), (ctx) => {
             const typeAuth = ctx.session.authType;
             const adminActive = ctx.session.adminActive;
             if (typeAuth === 'admin' && !adminActive) {
@@ -63,13 +65,17 @@ export class StartCommand extends Command {
             ctx.reply('Прикрепите файл')
         })
 
-        this.bot.on('document', async (ctx) => {
+        this.bot.on(message('document'), async (ctx) => {
             const typeAuth = ctx.session.authType;
             const adminActive = ctx.session.adminActive;
-            const fileId = ctx?.update?.message?.document.file_id;
-            if (typeAuth && adminActive) {
+            const fileId = ctx?.update?.message?.document?.file_id;
+            if (typeAuth === 'admin' && adminActive) {
                 ctx.telegram.getFileLink(fileId).then((link) => {
-                    console.log(link);
+                    if(link) {
+                        console.log(fileId);
+                    }
+                }).catch((err) => {
+                    ctx.reply(`Ошибка загрузки документа (${err.message})!`);
                 })
             }
         })
@@ -81,8 +87,12 @@ export class StartCommand extends Command {
         })
         
         this.bot.action('uploadGuide', (ctx) => {
-            ctx.reply('Документ удачно загружен');
-            ctx.replyWithDocument('BQACAgIAAxkBAAID8WcGjTwnBoGd_hNGAxaUv33GuHAMAAI0XAACBRU4SDRE4_XAkNpqNgQ');
+            //BQACAgIAAxkBAAIEM2cI8XnDNqjWlU8RxLjk5HdGgQABGQACi1UAAk6pSUhHM0jxeve77zYE
+            ctx.replyWithDocument('BQACAgIAAxkBAAIEM2cI8XnDNqjWlU8RxLjk5HdGgQABGQACi1UAAk6pSUhHM0jxeve77zYE').then((res) => {
+                ctx.reply('Гайд получен!');
+            }).catch((error) => {
+                ctx.reply(`Ошибка загрузки гайда (${error.message})!`);
+            });
         })
     }
 }
