@@ -1,9 +1,9 @@
 import { Telegraf } from "telegraf";
-import { IConfigService } from "./config/config.interface";
-import { ConfigService } from "./config/config.service";
-import { IBotContext } from "./context/context.interface";
-import { Command } from "./commands/command.class";
-import { StartCommand } from "./commands/start.command";
+import { IConfigService } from "./config/config.interface.js";
+import { ConfigService } from "./config/config.service.js";
+import { IBotContext } from "./context/context.interface.js";
+import { Command } from "./commands/command.class.js";
+import { StartCommand } from "./commands/start.command.js";
 import LocalSession from "telegraf-session-local";
 
 class Bot {

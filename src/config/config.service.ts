@@ -1,4 +1,4 @@
-import { IConfigService } from "./config.interface";
+import { IConfigService } from "./config.interface.js";
 import { config, DotenvParseOutput } from "dotenv";
 
 export class ConfigService implements IConfigService {

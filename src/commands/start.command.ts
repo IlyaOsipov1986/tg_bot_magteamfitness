@@ -1,10 +1,13 @@
 import { Markup, Telegraf } from "telegraf";
 import { message } from "telegraf/filters"; 
-import { Command } from "./command.class";
-import { IBotContext } from "../context/context.interface";
-import { getMainMenuAdmin, getMainMenuUser } from "../utils/keyboards";
-import { resetActiveAdmin } from "../utils/resetSession";
-import { getGuides } from "../database/database";
+import { Command } from "./command.class.js";
+import { IBotContext } from "../context/context.interface.js";
+import { getMainMenuAdmin, getMainMenuUser } from "../utils/keyboards.js";
+import { resetActiveAdmin } from "../utils/resetSession.js";
+import { getGuides }  from "../database/database.js";
+
+const guides = await getGuides()
+    .then((res: any) => res);
 
 export class StartCommand extends Command {
 
@@ -16,8 +19,6 @@ export class StartCommand extends Command {
         this.bot.start((ctx) => {
             console.log(ctx.session)
             resetActiveAdmin(ctx);
-            getGuides()
-                .then((res: any) => console.log(res))
             ctx.reply('Добро пожаловать в бот! Подписавшись на канал, вы сможете получать свежие анонсы. После авторизации будет доступен гайд.',
             Markup.inlineKeyboard([
                 Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
@@ -59,6 +60,10 @@ export class StartCommand extends Command {
         
         this.bot.action('addUser', (ctx) => {
             ctx.reply('Тут будет форма добавления атлета')
+        })
+
+        this.bot.action('listGuides', (ctx) => {
+            ctx.reply('Список гайдов')
         })
 
         this.bot.action('downloadGuide', (ctx) => {
