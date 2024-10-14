@@ -5,12 +5,10 @@ import { IBotContext } from "../context/context.interface.js";
 import { getMainMenuAdmin, getMainMenuUser } from "../utils/keyboards.js";
 import { resetActiveAdmin } from "../utils/resetSession.js";
 import { getGuides }  from "../database/database.js";
-
-const guides = await getGuides()
-    .then((res: any) => res);
-
+import { IResultGuides } from "../commands/command.interface.js";
+ 
 export class StartCommand extends Command {
-
+    
     constructor(bot: Telegraf<IBotContext>) {
         super(bot);
     }
@@ -62,8 +60,16 @@ export class StartCommand extends Command {
             ctx.reply('Тут будет форма добавления атлета')
         })
 
-        this.bot.action('listGuides', (ctx) => {
-            ctx.reply('Список гайдов')
+        this.bot.action('listGuides', async (ctx) => {
+            const guides = await getGuides().then((res: any) => res); 
+            const result: string[] = [];
+      
+            guides.forEach((elem: IResultGuides) => {
+                result.push(elem.title)
+            });
+
+            ctx.replyWithHTML(
+              '<b>Список ваших гайдов</b>', Markup.keyboard(result).resize());
         })
 
         this.bot.action('downloadGuide', (ctx) => {
