@@ -82,8 +82,9 @@ export class StartCommand extends Command {
             const fileId = ctx?.update?.message?.document?.file_id;
             if (typeAuth === 'admin' && adminActive) {
                 ctx.telegram.getFileLink(fileId).then((link) => {
-                    if(link) {
+                    if (link) {
                         console.log(fileId);
+                        ctx.reply('Гайд успешно загружен!');
                     }
                 }).catch((err) => {
                     ctx.reply(`Ошибка загрузки документа (${err.message})!`);
@@ -99,7 +100,7 @@ export class StartCommand extends Command {
         
         this.bot.action('uploadGuide', (ctx) => {
             //BQACAgIAAxkBAAIEM2cI8XnDNqjWlU8RxLjk5HdGgQABGQACi1UAAk6pSUhHM0jxeve77zYE
-            ctx.replyWithDocument('BQACAgIAAxkBAAIEM2cI8XnDNqjWlU8RxLjk5HdGgQABGQACi1UAAk6pSUhHM0jxeve77zYE').then((res) => {
+            ctx.replyWithDocument('BQACAgIAAxkBAAIGCGc0SB1Pc2jU2T9EgQwV5TdqfKOsAAIwXQAC3NKpSQxBE5cyAAEtPjYE').then((res) => {
                 ctx.reply('Гайд получен!');
             }).catch((error) => {
                 ctx.reply(`Ошибка загрузки гайда (${error.message})!`);

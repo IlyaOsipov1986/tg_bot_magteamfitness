@@ -1,5 +1,6 @@
 import mysql from "mysql2";
 import { config } from "dotenv";
+import { IResultGuides } from "../commands/command.interface.js";
 
 const { parsed } = config();
 
@@ -13,8 +14,17 @@ const pool = mysql.createPool({
 }).promise();
     
 export async function getGuides() {    
-    const [itemGuides] = await pool.query("SELECT * FROM guides")
-    return itemGuides;
+    const [guides] = await pool.query("SELECT * FROM guides")
+    return guides;
+}
+
+export async function getSingleGuide(id: number) {
+    const [guides]: any = await pool.query(`
+        SELECT * 
+        FROM guides
+        WHERE id = ?
+    `, [id])
+    return guides[0];
 }
 
 
