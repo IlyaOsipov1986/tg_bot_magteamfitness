@@ -1,4 +1,3 @@
-import e from "express";
 import { Markup } from "telegraf";
 
 export function getMainMenuAdmin() {
@@ -13,5 +12,12 @@ export function getMainMenuAdmin() {
 export function getMainMenuUser() {
     return Markup.inlineKeyboard([
         Markup.button.callback('Скачать гайд', 'uploadGuide'),
+    ])
+}
+
+export function getSingleMenuGuide() {
+    return Markup.inlineKeyboard([
+        Markup.button.callback('Сделать основным', 'ActiveCurrentGuide'),
+        Markup.button.callback('Удалить гайд', 'deleteGuide'),
     ])
 }
