@@ -7,7 +7,6 @@ import { resetActiveAdmin } from "../utils/resetSession.js";
 import { createGuide, deleteGuide, getGuides }  from "../database/database.js";
 import { IResultGuides } from "../commands/command.interface.js";
 import { getTitleGuideForButtonsMenu } from "../utils/getTitleGuideForButtonsMenu.js";
-import { title } from "process";
 
 export class StartCommand extends Command {
     
@@ -67,7 +66,6 @@ export class StartCommand extends Command {
 
         this.bot.hears(result, (ctx) => {
             const titleGuide = ctx?.update?.message?.text;
-            console.log(titleGuide)
             if (titleGuide) {
                 ctx.session.titleGuide = titleGuide;
                 ctx.reply(`Название гайда "${titleGuide}"`, getSingleMenuGuide());
@@ -75,14 +73,17 @@ export class StartCommand extends Command {
         })
 
         this.bot.action('deleteGuide', (ctx) => {
-            const title = ctx.session.titleGuide;
-             deleteGuide(title)
-            .then(() => {
-                ctx.session.titleGuide = '';
-            })
-            .catch((error) => {
-                ctx.reply(`Ошибка удаления гайда (${error.message})!`);
-            });
+            const chatId: any = ctx?.update?.callback_query?.message?.chat.id;
+            const messageId: any = ctx?.update?.callback_query?.message?.message_id;
+            ctx.telegram.deleteMessage(chatId, messageId);
+            // const title = ctx.session.titleGuide;
+            //  deleteGuide(title)
+            // .then(() => {
+            //     ctx.session.titleGuide = '';
+            // })
+            // .catch((error) => {
+            //     ctx.reply(`Ошибка удаления гайда (${error.message})!`);
+            // });
         })
 
         this.bot.action('downloadGuide', (ctx) => {

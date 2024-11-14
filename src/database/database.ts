@@ -28,7 +28,8 @@ export async function getSingleGuide(id: number) {
 
 export async function createGuide(title: string, contents: string) {
     const result = await pool.query(`
-        INSERT INTO guides (title, contents)
+        INSERT 
+        INTO guides (title, contents)
         VALUES (?, ?)    
     `, [title, contents])
     return result;
@@ -36,9 +37,10 @@ export async function createGuide(title: string, contents: string) {
 
 export async function deleteGuide(title: string) {
     const result = await pool.query(`
-    DELETE FROM guides
-    WHERE title=${title}
-    `, [title])
+        DELETE * 
+        FROM guides
+        WHERE title=${title}
+        `, [title])
     return result;
 }
 
