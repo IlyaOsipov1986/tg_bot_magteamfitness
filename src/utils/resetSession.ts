@@ -4,4 +4,5 @@ export const resetActiveAdmin: resActiveAdminFnType = (ctx) => {
     ctx.session.adminActive = false;
     ctx.session.authType = '';
     ctx.session.adminDownLoadGuideActive = false;
+    ctx.session.titleGuide = '';
 }

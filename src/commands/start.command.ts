@@ -47,7 +47,8 @@ export class StartCommand extends Command {
     async handleAdmin(): Promise<void> {
 
         const {result, guides} = await getTitleGuideForButtonsMenu();
-
+        console.log(guides)
+        
         this.bot.action('listUsers', (ctx) => {
            ctx.reply('Тут будут список атлетов', Markup.removeKeyboard()) 
         })
@@ -57,6 +58,7 @@ export class StartCommand extends Command {
         })
 
         this.bot.action('listGuides', async (ctx) => {
+            console.log(result)
             if (guides.length === 0) {
                 ctx.reply('Список гайдов пуст!');
                 return;
