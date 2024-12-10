@@ -4,7 +4,7 @@ import { Command } from "./command.class.js";
 import { IBotContext } from "../context/context.interface.js";
 import { getMainMenuAdmin, getMainMenuUser, getSingleMenuGuide } from "../utils/keyboards.js";
 import { resetActiveAdmin } from "../utils/resetSession.js";
-import { createGuide, deleteGuide, getGuides }  from "../database/database.js";
+import { createGuide, deleteGuide, findGuide }  from "../database/database.js";
 import { IResultGuides } from "../commands/command.interface.js";
 import { getTitleGuideForButtonsMenu } from "../utils/getTitleGuideForButtonsMenu.js";
 
@@ -58,7 +58,6 @@ export class StartCommand extends Command {
         })
 
         this.bot.action('listGuides', async (ctx) => {
-            console.log(result)
             if (guides.length === 0) {
                 ctx.reply('Список гайдов пуст!');
                 return;
@@ -78,14 +77,14 @@ export class StartCommand extends Command {
             const chatId: any = ctx?.update?.callback_query?.message?.chat.id;
             const messageId: any = ctx?.update?.callback_query?.message?.message_id;
             ctx.telegram.deleteMessage(chatId, messageId);
-            // const title = ctx.session.titleGuide;
-            //  deleteGuide(title)
-            // .then(() => {
-            //     ctx.session.titleGuide = '';
-            // })
-            // .catch((error) => {
-            //     ctx.reply(`Ошибка удаления гайда (${error.message})!`);
-            // });
+            const title = ctx.session.titleGuide;
+            deleteGuide(title)
+            .then(() => {
+                ctx.session.titleGuide = '';
+            })
+            .catch((error) => {
+                ctx.reply(`Ошибка удаления гайда (${error.message})!`);
+            });
         })
 
         this.bot.action('downloadGuide', (ctx) => {
@@ -93,7 +92,7 @@ export class StartCommand extends Command {
             ctx.reply('Прикрепите документ', Markup.removeKeyboard())
         })
 
-        this.bot.on(message('document'), (ctx) => {
+        this.bot.on(message('document'), async (ctx) => {
             const typeAuth = ctx.session.authType;
             const adminActive = ctx.session.adminActive;
             const adminDownLoadGuide = ctx.session.adminDownLoadGuideActive;
@@ -104,6 +103,14 @@ export class StartCommand extends Command {
                     ctx.reply('Необходимо указать название документа при загрузке!');
                     return;
                 }
+                
+                const foundGuid = await findGuide(titleForGuide);
+
+                if (foundGuid && Object.values(foundGuid).length > 0) {
+                    ctx.reply('Гайд с таким названием уже существует!');
+                    return;
+                }
+
                 ctx.telegram.getFileLink(fileId).then(() => {
                     createGuide(titleForGuide, fileId);
                     ctx.session.adminDownLoadGuideActive = false;
