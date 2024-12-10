@@ -3,10 +3,11 @@ import { message } from "telegraf/filters";
 import { Command } from "./command.class.js";
 import { IBotContext } from "../context/context.interface.js";
 import { getMainMenuAdmin, getMainMenuUser, getSingleMenuGuide } from "../utils/keyboards.js";
-import { resetActiveAdmin } from "../utils/resetSession.js";
+import { resetActiveAdmin } from "../utils/utils.js";
 import { createGuide, deleteGuide, findGuide, setMainGuide }  from "../database/database.js";
 import { IResultGuides } from "../commands/command.interface.js";
-import { getTitleGuideForButtonsMenu } from "../utils/getTitleGuideForButtonsMenu.js";
+import { getTitleGuideForButtonsMenu } from "../utils/utils.js";
+import { findMainGuide } from "../utils/utils.js";
 
 export class StartCommand extends Command {
     
@@ -150,13 +151,17 @@ export class StartCommand extends Command {
         })
     }
 
-    handleUser(): void {
+    async handleUser(): Promise<void> {
+
+        const {guides} = await getTitleGuideForButtonsMenu();
+    
         this.bot.action('Скачать программу тренировок', (ctx) => {
            ctx.reply('Скачивание программы тренировок'); 
         })
         
         this.bot.action('uploadGuide', (ctx) => {
-            ctx.replyWithDocument('BQACAgIAAxkBAAIGCGc0SB1Pc2jU2T9EgQwV5TdqfKOsAAIwXQAC3NKpSQxBE5cyAAEtPjYE').then((res) => {
+            const actualGuide = findMainGuide(guides);
+            ctx.replyWithDocument(actualGuide).then((res) => {
                 ctx.reply('Гайд получен!');
             }).catch((error) => {
                 ctx.reply(`Ошибка загрузки гайда (${error.message})!`);

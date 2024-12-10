@@ -3,5 +3,5 @@ export interface IResultGuides {
     title: string,
     contents: string,
     created: Date,
-    mainGuide: boolean;
+    mainGuide: number;
 }
