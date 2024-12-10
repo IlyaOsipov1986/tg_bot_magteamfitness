@@ -53,14 +53,9 @@ export async function deleteGuide(title: string) {
 }
 
 export async function setMainGuide(title: string) {
-    await pool.query(`
-        UPDATE guides
-        SET mainGuide = false`)
-    
     const result = await pool.query(`
-        UPDATE guides
-        SET mainGuide = true
-        WHERE title = '${title}'`, [title])
+            UPDATE guides
+            SET mainGuide = title = '${title}'`, [title]) 
     return result;
 }
 

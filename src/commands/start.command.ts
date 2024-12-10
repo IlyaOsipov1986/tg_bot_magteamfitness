@@ -84,7 +84,7 @@ export class StartCommand extends Command {
                 ctx.reply('Гайд выбран основным!');
             })
             .catch((error) => {
-                ctx.reply(`Ошибка установик гайда (${error.message})!`);
+                ctx.reply(`Ошибка установки гайда (${error.message})!`); 
             });
             ctx.telegram.deleteMessage(chatId, messageId);
         })
