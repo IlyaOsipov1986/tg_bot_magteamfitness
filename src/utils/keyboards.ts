@@ -17,7 +17,7 @@ export function getMainMenuUser() {
 
 export function getSingleMenuGuide() {
     return Markup.inlineKeyboard([
-        Markup.button.callback('Сделать основным', 'ActiveCurrentGuide'),
+        Markup.button.callback('Сделать основным', 'activeMainGuide'),
         Markup.button.callback('Удалить гайд', 'deleteGuide'),
     ])
 }

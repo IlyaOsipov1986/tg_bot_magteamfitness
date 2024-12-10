@@ -52,4 +52,12 @@ export async function deleteGuide(title: string) {
     return result;
 }
 
+export async function setMainGuide(title: string) {
+    const result = await pool.query(`
+        UPDATE guides
+        SET mainGuide = true
+        WHERE title = '${title}'`, [title])
+    return result;
+}
+
 

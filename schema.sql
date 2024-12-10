@@ -10,5 +10,3 @@ CREATE TABLE guides (
 
 INSERT INTO guides (title, contents)
 VALUES
-('My First guide', 'BQACAgIAAxkBAAIEVGcJB8y6wdC5xvVbRZ8VdyNxCaR6AAKoVwACTqlJSNsbVt5VGFR4NgQ'),
-('My Second guide', 'BQACAgIAAxkBAAIEVWcJB9cBxjUXDLmi4d2kS-px8t9EAAKqVwACTqlJSEZAe0YY3qTzNgQ');

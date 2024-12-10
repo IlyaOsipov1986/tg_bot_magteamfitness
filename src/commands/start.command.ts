@@ -4,7 +4,7 @@ import { Command } from "./command.class.js";
 import { IBotContext } from "../context/context.interface.js";
 import { getMainMenuAdmin, getMainMenuUser, getSingleMenuGuide } from "../utils/keyboards.js";
 import { resetActiveAdmin } from "../utils/resetSession.js";
-import { createGuide, deleteGuide, findGuide }  from "../database/database.js";
+import { createGuide, deleteGuide, findGuide, setMainGuide }  from "../database/database.js";
 import { IResultGuides } from "../commands/command.interface.js";
 import { getTitleGuideForButtonsMenu } from "../utils/getTitleGuideForButtonsMenu.js";
 
@@ -73,10 +73,24 @@ export class StartCommand extends Command {
             }
         })
 
+        this.bot.action('activeMainGuide', (ctx) => {
+            const chatId: any = ctx?.update?.callback_query?.message?.chat.id;
+            const messageId: any = ctx?.update?.callback_query?.message?.message_id;
+            const title = ctx.session.titleGuide;
+            setMainGuide(title)
+            .then(() => {
+                ctx.session.titleGuide = '';
+                ctx.reply('Гайд выбран основным!');
+            })
+            .catch((error) => {
+                ctx.reply(`Ошибка установик гайда (${error.message})!`);
+            });
+            ctx.telegram.deleteMessage(chatId, messageId);
+        })
+
         this.bot.action('deleteGuide', (ctx) => {
             const chatId: any = ctx?.update?.callback_query?.message?.chat.id;
             const messageId: any = ctx?.update?.callback_query?.message?.message_id;
-            ctx.telegram.deleteMessage(chatId, messageId);
             const title = ctx.session.titleGuide;
             deleteGuide(title)
             .then(() => {
@@ -85,6 +99,7 @@ export class StartCommand extends Command {
             .catch((error) => {
                 ctx.reply(`Ошибка удаления гайда (${error.message})!`);
             });
+            ctx.telegram.deleteMessage(chatId, messageId);
         })
 
         this.bot.action('downloadGuide', (ctx) => {
