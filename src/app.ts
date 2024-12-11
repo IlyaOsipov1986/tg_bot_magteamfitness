@@ -32,14 +32,16 @@ class Bot {
 }
 
 class Routes {
-
+    url: string | undefined
     constructor() {}
 
-    getGuides() {
-        app.get('/guides', async (req, res) => {
-            const guides = await getGuides().then((res: any) => res);
-            res.send(guides);
-        })
+    getGuides(url: string) {
+        this.url = url;
+        
+            app.get(this.url, async (req, res) => {
+                const guides = await getGuides().then((res: any) => res);
+                res.send(guides);
+            })
     }
 }
 
@@ -47,7 +49,7 @@ const bot = new Bot(new ConfigService());
 const routes = new Routes();
 bot.init();
 
-routes.getGuides();
+routes.getGuides('/guides');
 
 app.listen(8080, () => {
     console.log('Server running')
