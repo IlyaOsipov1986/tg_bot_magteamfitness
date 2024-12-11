@@ -5,7 +5,6 @@ import { IBotContext } from "../context/context.interface.js";
 import { getMainMenuAdmin, getMainMenuUser, getSingleMenuGuide } from "../utils/keyboards.js";
 import { resetActiveAdmin } from "../utils/utils.js";
 import { createGuide, deleteGuide, findGuide, setMainGuide }  from "../database/database.js";
-import { IResultGuides } from "../commands/command.interface.js";
 import { getTitleGuideForButtonsMenu } from "../utils/utils.js";
 import { findMainGuide } from "../utils/utils.js";
 
@@ -48,8 +47,7 @@ export class StartCommand extends Command {
     async handleAdmin(): Promise<void> {
 
         const {result, guides} = await getTitleGuideForButtonsMenu();
-        console.log(guides)
-        
+       
         this.bot.action('listUsers', (ctx) => {
            ctx.reply('Тут будут список атлетов', Markup.removeKeyboard()) 
         })
