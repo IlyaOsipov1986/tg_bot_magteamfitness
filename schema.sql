@@ -10,3 +10,11 @@ CREATE TABLE guides (
 
 INSERT INTO guides (title, contents)
 VALUES
+
+CREATE TABLE users (
+    user_id integer,
+    last_name VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT NOW()
+);

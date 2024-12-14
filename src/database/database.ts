@@ -9,9 +9,9 @@ const pool = mysql.createPool({
     host: dotEnvDataBase?.MYSQL_HOST,
     user: dotEnvDataBase?.MYSQL_USER,
     password: dotEnvDataBase?.MYSQL_PASSWORD,
-    database: dotEnvDataBase?.MYSQL_DATABASE
+    database: dotEnvDataBase?.MYSQL_DATABASE,
 }).promise();
-    
+
 export async function getGuides() {    
     const [guides] = await pool.query("SELECT * FROM guides")
     return guides;

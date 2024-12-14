@@ -16,7 +16,7 @@ export class StartCommand extends Command {
 
     handle(): void {
         this.bot.start((ctx) => {
-            console.log(ctx.session)
+            console.log(ctx.message.chat.id)
             resetActiveAdmin(ctx);
             ctx.reply('Добро пожаловать в бот! Подписавшись на канал, вы сможете получать свежие анонсы. После авторизации будет доступен гайд.',
             Markup.inlineKeyboard([
