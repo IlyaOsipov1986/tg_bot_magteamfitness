@@ -59,4 +59,13 @@ export async function setMainGuide(title: string) {
     return result;
 }
 
+export async function findUser(id: number) {
+    const [users]: any = await pool.query(`
+        SELECT * 
+        FROM users
+        WHERE user_id = ?
+    `, [id])
+    return users[0];
+}
+
 

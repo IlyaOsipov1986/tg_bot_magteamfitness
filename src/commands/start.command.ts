@@ -4,25 +4,35 @@ import { Command } from "./command.class.js";
 import { IBotContext } from "../context/context.interface.js";
 import { getMainMenuAdmin, getMainMenuUser, getSingleMenuGuide } from "../utils/keyboards.js";
 import { resetActiveAdmin } from "../utils/utils.js";
-import { createGuide, deleteGuide, findGuide, setMainGuide }  from "../database/database.js";
+import { createGuide, deleteGuide, findGuide, findUser, setMainGuide }  from "../database/database.js";
 import { getTitleGuideForButtonsMenu } from "../utils/utils.js";
 import { findMainGuide } from "../utils/utils.js";
+import { config } from "dotenv";
+import { url } from "inspector";
 
 export class StartCommand extends Command {
-    
+    webAppUrl: string | undefined;
     constructor(bot: Telegraf<IBotContext>) {
         super(bot);
+        const { parsed } = config();
+        this.webAppUrl = parsed?.WEB_APP_URL;
     }
 
     handle(): void {
-        this.bot.start((ctx) => {
-            console.log(ctx.message.chat.id)
+        this.bot.start( async (ctx) => {
             resetActiveAdmin(ctx);
-            ctx.reply('Добро пожаловать в бот! Подписавшись на канал, вы сможете получать свежие анонсы. После авторизации будет доступен гайд.',
-            Markup.inlineKeyboard([
-                Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
-                Markup.button.callback('Авторизоваться', 'user')
-            ]))
+            const userId = ctx.message.chat.id;
+            const foundUser = await findUser(userId);
+            if (foundUser) {
+                ctx.session.authType = "user";
+                ctx.reply("Вы вошли как user", getMainMenuUser());
+            } else {
+                ctx.reply('Добро пожаловать в бот! Подписавшись на канал, вы сможете получать свежие анонсы. После регистрации будет доступен гайд.',
+                Markup.inlineKeyboard([
+                    Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
+                    Markup.button.webApp('Зарегистрироваться', `${this.webAppUrl}`)
+                ]))
+            }
         });
 
         this.bot.action('user', (ctx) => {
