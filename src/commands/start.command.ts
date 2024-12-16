@@ -8,7 +8,6 @@ import { createGuide, deleteGuide, findGuide, findUser, setMainGuide }  from "..
 import { getTitleGuideForButtonsMenu } from "../utils/utils.js";
 import { findMainGuide } from "../utils/utils.js";
 import { config } from "dotenv";
-import { url } from "inspector";
 
 export class StartCommand extends Command {
     webAppUrl: string | undefined;
@@ -28,12 +27,28 @@ export class StartCommand extends Command {
                 ctx.reply("Вы вошли как user", getMainMenuUser());
             } else {
                 ctx.reply('Добро пожаловать в бот! Подписавшись на канал, вы сможете получать свежие анонсы. После регистрации будет доступен гайд.',
-                Markup.inlineKeyboard([
-                    Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
-                    Markup.button.webApp('Зарегистрироваться', `${this.webAppUrl}`)
-                ]))
-            }
+                // Markup.inlineKeyboard([
+                //     Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
+                //     Markup.button.webApp('Зарегистрироваться', `${this.webAppUrl}/register`)
+                // ])
+                Markup.keyboard([
+                    Markup.button.webApp('Зарегистрироваться', `${this.webAppUrl}/register`)
+                  ])
+            )}
         });
+
+        this.bot.on(message('web_app_data'), async (ctx) => {
+            const dataFromWebApp = JSON.parse(ctx?.message?.web_app_data?.data);
+            if(dataFromWebApp) {
+                try {
+                    console.log(dataFromWebApp)
+                    ctx.reply('Вы зарегистрированы!', Markup.removeKeyboard())
+                } catch(e) {
+                       ctx.reply('Ошибка регистрации!')
+                       console.log(e); 
+                }
+            }
+        })
 
         this.bot.action('user', (ctx) => {
             resetActiveAdmin(ctx);
