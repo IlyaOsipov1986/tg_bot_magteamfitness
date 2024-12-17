@@ -4,10 +4,11 @@ import { Command } from "./command.class.js";
 import { IBotContext } from "../context/context.interface.js";
 import { getMainMenuAdmin, getMainMenuUser, getSingleMenuGuide } from "../utils/keyboards.js";
 import { resetActiveAdmin } from "../utils/utils.js";
-import { createGuide, deleteGuide, findGuide, findUser, setMainGuide }  from "../database/database.js";
+import { createGuide, createUser, deleteGuide, findGuide, findUser, setMainGuide }  from "../database/database.js";
 import { getTitleGuideForButtonsMenu } from "../utils/utils.js";
 import { findMainGuide } from "../utils/utils.js";
 import { config } from "dotenv";
+import { md5 } from 'js-md5';
 
 export class StartCommand extends Command {
     webAppUrl: string | undefined;
@@ -36,11 +37,27 @@ export class StartCommand extends Command {
         this.bot.on(message('web_app_data'), async (ctx) => {
             const dataFromWebApp = JSON.parse(ctx?.message?.web_app_data?.data);
             const userId = ctx.message.chat.id;
+            const passToHash = md5(dataFromWebApp.password);
+        
             if (dataFromWebApp) {
+
+                const newUser = {
+                    user_id: userId,
+                    last_name: dataFromWebApp.last_name,
+                    first_name: dataFromWebApp.first_name,
+                    email: dataFromWebApp.email,
+                    password: passToHash
+                }
+
                 try {
-                    console.log(dataFromWebApp)
-                    console.log(userId)
-                    ctx.reply('Вы зарегистрированы!', Markup.removeKeyboard());
+                    createUser(newUser)
+                    .then((res) => {
+                        ctx.reply('Вы зарегистрированы!', Markup.removeKeyboard());
+                        ctx.reply("Вы вошли как user", getMainMenuUser());
+                    })
+                    .catch((err) => {
+                        ctx.reply(`Ошибка регистрации! ${err.message}`)
+                    });
                 } catch(e) {
                     ctx.reply('Ошибка регистрации!')
                     console.log(e); 
