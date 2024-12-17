@@ -1,5 +1,6 @@
 import mysql from "mysql2";
 import { config } from "dotenv";
+import { IAddNewUser } from "../types/database.interface.js";
 
 const { parsed } = config();
 
@@ -68,4 +69,11 @@ export async function findUser(id: number) {
     return users[0];
 }
 
-
+export async function createUser(user: IAddNewUser) {
+    const result = await pool.query(`
+        INSERT 
+        INTO guides (user_id, last_name, first_name, email, password)
+        VALUES (?, ?)    
+    `, [user.user_id, user.last_name, user.first_name, user.email, user.password])
+    return result;
+}

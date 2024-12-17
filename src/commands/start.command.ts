@@ -26,26 +26,24 @@ export class StartCommand extends Command {
                 ctx.session.authType = "user";
                 ctx.reply("Вы вошли как user", getMainMenuUser());
             } else {
-                ctx.reply('Добро пожаловать в бот! Подписавшись на канал, вы сможете получать свежие анонсы. После регистрации будет доступен гайд.',
-                // Markup.inlineKeyboard([
-                //     Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
-                //     Markup.button.webApp('Зарегистрироваться', `${this.webAppUrl}/register`)
-                // ])
+                ctx.replyWithHTML(`Добро пожаловать в бот! <a href='https://t.me/podnimaemoreh'>Подписавшись на канал</a>, вы сможете получать свежие анонсы. После регистрации будет доступен гайд.`,
                 Markup.keyboard([
                     Markup.button.webApp('Зарегистрироваться', `${this.webAppUrl}/register`)
-                  ])
+                  ]).resize()
             )}
         });
 
         this.bot.on(message('web_app_data'), async (ctx) => {
             const dataFromWebApp = JSON.parse(ctx?.message?.web_app_data?.data);
-            if(dataFromWebApp) {
+            const userId = ctx.message.chat.id;
+            if (dataFromWebApp) {
                 try {
                     console.log(dataFromWebApp)
-                    ctx.reply('Вы зарегистрированы!', Markup.removeKeyboard())
+                    console.log(userId)
+                    ctx.reply('Вы зарегистрированы!', Markup.removeKeyboard());
                 } catch(e) {
-                       ctx.reply('Ошибка регистрации!')
-                       console.log(e); 
+                    ctx.reply('Ошибка регистрации!')
+                    console.log(e); 
                 }
             }
         })
