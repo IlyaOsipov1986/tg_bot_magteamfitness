@@ -65,23 +65,12 @@ export class StartCommand extends Command {
             }
         })
 
-        this.bot.action('user', (ctx) => {
-            resetActiveAdmin(ctx);
-            ctx.session.authType = "user";
-            ctx.reply("Вы вошли как user", getMainMenuUser()); 
-        })
-
         this.bot.command('admin', (ctx) => {
-            const typeAuth = ctx.session.authType;
-            if (typeAuth === 'admin') {
-                ctx.reply("Вы вошли как администратор", getMainMenuAdmin());
-                return; 
-            }
-            resetActiveAdmin(ctx);
-            ctx.session.authType = 'admin';    
-            ctx.reply('Введите пароль администратора', Markup.removeKeyboard());
+            ctx.reply('Перейти в личный кабинет администратора',
+            Markup.inlineKeyboard([
+                    Markup.button.webApp('Авторизация', `${this.webAppUrl}/login`)
+            ]))
         })
-
     }
 
     async handleAdmin(): Promise<void> {

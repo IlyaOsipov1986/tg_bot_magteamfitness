@@ -5,6 +5,7 @@ CREATE TABLE guides (
     id integer PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
     contents TEXT NOT NULL,
+    mainGuide BOOLEAN DEFAULT FALSE,
     created TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
@@ -17,5 +18,6 @@ CREATE TABLE users (
     first_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
+    activeAdmin BOOLEAN DEFAULT 0 NOT NULL,
     created TIMESTAMP NOT NULL DEFAULT NOW()
 );

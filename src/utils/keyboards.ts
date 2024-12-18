@@ -11,6 +11,7 @@ export function getMainMenuAdmin() {
 
 export function getMainMenuUser() {
     return Markup.inlineKeyboard([
+        Markup.button.url('Подписаться на канал', 'https://t.me/podnimaemoreh'),
         Markup.button.callback('Скачать гайд', 'uploadGuide'),
     ])
 }
