@@ -7,9 +7,31 @@ import { StartCommand } from "./commands/start.command.js";
 import express from "express";
 import LocalSession from "telegraf-session-local";
 import { getGuides } from "./database/database.js";
+import { config } from "dotenv";
+import cors from "cors";
+import { errorHandlingMiddleware } from "./utils/server/middleware/ErrorHandlingMiddleware.js";
+
+const { parsed } = config();
+
+const PORT = parsed?.PORT || 5000;
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 
+//Обработка ошибок, последний Middleware
+app.use(errorHandlingMiddleware);
+
+const start = async () => {
+    try {
+        app.listen(PORT, () => {
+            console.log(`Server running ${PORT}`);
+        })
+    } catch(e) {
+        console.log(e);
+    }
+}
+ 
 class Bot {
     bot: Telegraf<IBotContext>;
     commands: Command[] = [];
@@ -48,9 +70,7 @@ class Routes {
 const bot = new Bot(new ConfigService());
 const routes = new Routes();
 bot.init();
+start();
 
 routes.getGuides('/guides');
 
-app.listen(8080, () => {
-    console.log('Server running')
-})
