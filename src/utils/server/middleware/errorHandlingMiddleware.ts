@@ -1,9 +1,9 @@
-import { ErrorRequestHandler, NextFunction } from "express"
 import { ApiError } from "../error/ApiError.js"
+import { ErrorRequestHandler } from "../../../types/middleware.type.js"
 
-export const errorHandlingMiddleware: ErrorRequestHandler  = (err: any, req: any, res: any, next: NextFunction) => {
+export const errorHandlingMiddleware: ErrorRequestHandler = (err, req, res, next) => {
     if (err instanceof ApiError) {
         return res.status(err.status).json({ message: err.message })
     }
-    return res.status(500).json({ message: "Непредвиденная" })
+    return res.status(500).json({ message: "Непредвиденная ошибка!" })
 } 

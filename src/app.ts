@@ -9,10 +9,9 @@ import LocalSession from "telegraf-session-local";
 import { getGuides } from "./database/database.js";
 import { config } from "dotenv";
 import cors from "cors";
-import { errorHandlingMiddleware } from "./utils/server/middleware/ErrorHandlingMiddleware.js";
+import { errorHandlingMiddleware } from "./utils/server/middleware/errorHandlingMiddleware.js";
 
 const { parsed } = config();
-
 const PORT = parsed?.PORT || 5000;
 
 const app = express();
