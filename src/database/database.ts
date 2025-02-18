@@ -77,3 +77,8 @@ export async function createUser(user: IAddNewUser) {
     `, [user.user_id, user.last_name, user.first_name, user.email, user.password])
     return newUser; 
 }
+
+export async function getUsers() {    
+    const [users] = await pool.query("SELECT * FROM users")
+    return users;
+}

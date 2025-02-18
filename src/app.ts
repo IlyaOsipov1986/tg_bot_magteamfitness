@@ -6,7 +6,7 @@ import { Command } from "./commands/command.class.js";
 import { StartCommand } from "./commands/start.command.js";
 import express from "express";
 import LocalSession from "telegraf-session-local";
-import { getGuides } from "./database/database.js";
+import { getGuides, getUsers } from "./database/database.js";
 import { config } from "dotenv";
 import cors from "cors";
 import { errorHandlingMiddleware } from "./utils/server/middleware/errorHandlingMiddleware.js";
@@ -64,6 +64,15 @@ class Routes {
                 res.send(guides);
             })
     }
+
+    getUsers(url: string) {
+        this.url = url;
+
+            app.get(this.url, async(req, res) => {
+                const users = await getUsers().then((res: any) => res);
+                res.send(users);
+            })
+    }
 }
 
 const bot = new Bot(new ConfigService());
@@ -72,4 +81,5 @@ bot.init();
 start();
 
 routes.getGuides('/guides');
+routes.getUsers('/users');
 
